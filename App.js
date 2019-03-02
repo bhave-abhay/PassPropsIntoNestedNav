@@ -18,7 +18,53 @@ import {
     createAppContainer
 } from 'react-navigation';
 
+class Splash extends Component {
 
+	constructor(props) {
+		super(props);
+		this.state={
+			secondsRemaining: 5,
+			timerID: null
+		}
+	}
+
+	componentDidMount() {
+
+		var timerID = setInterval(
+			()=>{
+				this.setState(
+					state => {state.secondsRemaining = state.secondsRemaining-1; return state;},
+					()=>{
+						if(this.state.secondsRemaining === 0) {
+							clearInterval(this.state.timerID);
+							this.setState(
+								{
+									timerID: null
+								},
+								()=> {
+									this.props.navigation.navigate('App', {propFoo: 'Foo', propBar: 'Bar'})
+								}
+							)
+						}
+					}
+				)
+			},
+			1000
+		);
+		this.setState({
+			timerID: timerID
+		})
+	}
+
+	render() {
+		return (
+			<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+				<Text>This is splash screen</Text>
+				<Text>Going to App in {this.state.secondsRemaining} seconds</Text>
+			</View>
+		);
+	}
+}
 
 class HomeTab1 extends Component {
 	render() {
@@ -133,61 +179,54 @@ const AppStack = createStackNavigator(
 				'title': 'Other'
 			}
 		}
+	},
+	{
+		'defaultNavigationOptions': ({navigation}) =>{ return {
+			'headerLeft': (
+				<TouchableOpacity
+					onPress={()=>{
+						navigation.openDrawer();
+					}}
+				>
+					<Text>Drawer</Text>
+				</TouchableOpacity>
+			)
+
+		}}
 	}
 );
 
-class Splash extends Component {
-
-	constructor(props) {
-		super(props);
-		this.state={
-			secondsRemaining: 5,
-			timerID: null
-		}
-	}
-
-	componentDidMount() {
-
-		var timerID = setInterval(
-			()=>{
-				this.setState(
-					state => {state.secondsRemaining = state.secondsRemaining-1; return state;},
-					()=>{
-						if(this.state.secondsRemaining === 0) {
-							clearInterval(this.state.timerID);
-							this.setState(
-								{
-									timerID: null
-								},
-								()=> {
-									this.props.navigation.navigate('App', {propFoo: 'Foo', propBar: 'Bar'})
-								}
-							)
-						}
-					}
-				)
-			},
-			1000
-		);
-		this.setState({
-			timerID: timerID
-		})
-	}
-
+class Drawer extends Component {
 	render() {
 		return (
 			<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-				<Text>This is splash screen</Text>
-				<Text>Going to App in {this.state.secondsRemaining} seconds</Text>
+				<Text>This is drawer</Text>
+				<Text>navigation param propFoo is {this.props.navigation.getParam('propFoo', 'Not available!!')}</Text>
+				<Text>navigation param propBar is {this.props.navigation.getParam('propBar', 'Not available!!')}</Text>
+				<Text>screenProps is {this.props.screenProps === undefined ? 'Undefined!' : this.props.screenProps}</Text>
+				<TouchableOpacity
+					onPress={()=>this.props.navigation.navigate('HomeScreen')}
+				>
+					<Text>Go back to home screen</Text>
+				</TouchableOpacity>
 			</View>
 		);
 	}
 }
 
+const AppDrawerNavigator = createDrawerNavigator(
+	{ //Main screen
+        'AppStack': AppStack
+    },
+    { //Drawer
+        'contentComponent': Drawer
+    }
+);
+
 const AppSwitchNavigator = createSwitchNavigator(
 	{
 		'Splash': Splash,
-		'App': AppStack
+		'App': AppDrawerNavigator
 	}
 )
 
