@@ -2,8 +2,9 @@
 
 This is a demonstration for missing props in nested react-native navigators
 
-### Current Behavior
+[Here's the issue report](https://github.com/react-navigation/react-navigation/issues/5646) on react-navigation.
 
+### Current Behavior
 Structure is as follows
 
  - Switch navigator
