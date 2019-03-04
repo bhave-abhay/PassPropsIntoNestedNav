@@ -4,8 +4,6 @@ This is a demonstration for missing props in nested react-native navigators
 
 ### Current Behavior
 
-Repo link is provided below. It is a minimal demo app. 
-
 Structure is as follows
 
  - Switch navigator
